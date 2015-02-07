@@ -1,74 +1,80 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Object
+module Network.Traffic.Object.Types
        ( Object (..)
-       , decodeObjects
+       , ObjectVector
+       , Transport (..)
+       , Application (..)
+       , Encapsulation (..)
+       , Encryption (..)
+       , ServiceProvider (..)
+       , ClientApp (..)
+       , TerminalType (..)
+       , Vendor (..)
+       , OS (..)
+       , Direction (..)
        ) where
 
 import Control.Applicative ((<$>), (<*>))
 import Control.Monad (mzero)
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
-import Data.Char (ord)
 import Data.Csv ( FromField (parseField)
                 , FromRecord (parseRecord)
-                , HasHeader (NoHeader)
-                , DecodeOptions (..)
-                , (.!)
-                , decodeWith
-                , defaultDecodeOptions )
+                , (.!) )
 import qualified Data.Vector as V
+
+type ObjectVector = V.Vector Object
 
 -- | Transport protocol.
 data Transport = ICMP | TCP | UDP
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 -- | Application protocol.
 data Application = BitTorrent | C2DM | DNS | HTTP | ICMP_ | IMAP
                  | NTP | POP3 | SMTP | SIP | XMPP
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 -- | Functionality description.
 data Functionality = Advertisement | Audio | CloudStorage
                    | Email | FileDownload | FileSharing
                    | IMAndPrecense | MMS | SocialNetworking
                    | System | Video | WebBrowsing
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 -- | Encapsulation.
 data Encapsulation = Encapsulation
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 data Encryption = TLS_SSL
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 -- | Service provider.
 data ServiceProvider = Amazon | AdMob | Facebook | Google | GooglePlay | Netflix
                      | Microsoft | Pandora | P2P | Slacker | StreamTheWorld
                      | Twitter | Yahoo | YouTube
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 -- | Client Application.
 data ClientApp = AndroidMediaPlayer | GooglePlayApp | GTalk
                | InternetExplorer | WindowsMediaPlayer
                | YouTubePlayer | Zune
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 -- | Terminal type.
 data TerminalType = Handheld | M2M | PC | Router | Tablet
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 -- | Vendor name.
 newtype Vendor = Vendor BS.ByteString
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 -- | Operating system.
-data OS = Android | Bada | Blackberry | Limo | Maemo | Meego
-        | Proprietary | Symbian | Windows
-    deriving Show
+data OS = OS BS.ByteString
+    deriving (Eq, Ord, Show)
 
 -- Direction.
 data Direction = Downlink | Uplink
-    deriving Show
+    deriving (Eq, Ord, Show)
 
 -- | An object is the aggregation of data packets from a continous
 -- transmission flow of a single IP flow.
@@ -178,16 +184,7 @@ instance FromField Vendor where
   parseField = return . Vendor
 
 instance FromField OS where
-  parseField "ANDROID"     = return Android
-  parseField "BADA"        = return Bada
-  parseField "BLACKBERRY"  = return Blackberry
-  parseField "LIMO"        = return Limo
-  parseField "MAEMO"       = return Maemo
-  parseField "MEEGO"       = return Meego
-  parseField "PROPRIETARY" = return Proprietary
-  parseField "SYMBIAN"     = return Symbian
-  parseField "WINDOWS"     = return Windows
-  parseField _             = mzero
+  parseField = return . OS
 
 instance FromField Direction where
   parseField "downlink" = return Downlink
@@ -217,14 +214,6 @@ instance FromRecord Object where
                                 <*> v .! 18
     | otherwise       = mzero
 
--- | Decode the bytestring for objects. The objects are expected to be
--- separated on a new line where each field separated by a bar '|'.
-decodeObjects :: LBS.ByteString -> Either String (V.Vector Object)
-decodeObjects lbs =
-  let decodeOptions = defaultDecodeOptions
-        { decDelimiter = fromIntegral (ord '|')
-        }
-  in decodeWith decodeOptions NoHeader lbs
 
 
   
