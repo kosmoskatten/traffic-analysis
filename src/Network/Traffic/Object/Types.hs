@@ -31,14 +31,14 @@ data Transport = ICMP | TCP | UDP
 
 -- | Application protocol.
 data Application = BitTorrent | C2DM | DNS | HTTP | ICMP_ | IMAP
-                 | NTP | POP3 | SMTP | SIP | XMPP
+                 | NTP | POP3 | RTSP | SMTP | SIP | XMPP
     deriving (Eq, Ord, Show)
 
 -- | Functionality description.
 data Functionality = Advertisement | Audio | CloudStorage
                    | Email | FileDownload | FileSharing
-                   | IMAndPrecense | MMS | SocialNetworking
-                   | System | Video | WebBrowsing
+                   | IMAndPrecense | Media | MMS | SocialNetworking
+                   | System | Video | Weather | WebBrowsing
     deriving (Eq, Ord, Show)
 
 -- | Encapsulation.
@@ -49,15 +49,15 @@ data Encryption = TLS_SSL
     deriving (Eq, Ord, Show)
 
 -- | Service provider.
-data ServiceProvider = Amazon | AdMob | Facebook | Google | GooglePlay | Netflix
-                     | Microsoft | Pandora | P2P | Slacker | StreamTheWorld
-                     | Twitter | Yahoo | YouTube
+data ServiceProvider = Amazon | Facebook | Google | GooglePlay | Netflix
+                     | Microsoft | P2P | Twitter | Yahoo | YouTube
+                     | ServiceProvider !BS.ByteString
     deriving (Eq, Ord, Show)
 
 -- | Client Application.
-data ClientApp = AndroidMediaPlayer | GooglePlayApp | GTalk
-               | InternetExplorer | WindowsMediaPlayer
-               | YouTubePlayer | Zune
+data ClientApp = AndroidMediaPlayer | InternetExplorer | TwitterApp
+               | WindowsMediaPlayer | YouTubePlayer
+               | ClientApp !BS.ByteString
     deriving (Eq, Ord, Show)
 
 -- | Terminal type.
@@ -118,6 +118,7 @@ instance FromField Application where
   parseField "IMAP"         = return IMAP
   parseField "NTP"          = return NTP
   parseField "POP3"         = return POP3
+  parseField "RTSP"         = return RTSP
   parseField "SMTP"         = return SMTP
   parseField "SIP"          = return SIP
   parseField "XMPP"         = return XMPP
@@ -131,10 +132,12 @@ instance FromField Functionality where
   parseField "file-download"     = return FileDownload
   parseField "file sharing"      = return FileSharing
   parseField "IM and presence"   = return IMAndPrecense
+  parseField "media"             = return Media
   parseField "MMS"               = return MMS
   parseField "social networking" = return SocialNetworking
   parseField "system"            = return System
   parseField "video"             = return Video
+  parseField "weather"           = return Weather
   parseField "web browsing"      = return WebBrowsing
   parseField _                   = mzero
 
@@ -147,30 +150,23 @@ instance FromField Encryption where
 
 instance FromField ServiceProvider where
   parseField "Amazon"         = return Amazon
-  parseField "AdMob"          = return AdMob
   parseField "Facebook"       = return Facebook
   parseField "Google"         = return Google
-  parseField "Google Play"    = return GooglePlay
   parseField "Microsoft"      = return Microsoft
   parseField "Netflix"        = return Netflix
-  parseField "Pandora"        = return Pandora
   parseField "P2P"            = return P2P
-  parseField "Slacker"        = return Slacker
-  parseField "StreamTheWorld" = return StreamTheWorld
   parseField "Twitter"        = return Twitter
   parseField "Yahoo"          = return Yahoo
   parseField "YouTube"        = return YouTube
-  parseField _                = mzero
+  parseField provider         = return $ ServiceProvider provider
 
 instance FromField ClientApp where
   parseField "Android Media Player" = return AndroidMediaPlayer
-  parseField "Google Play"          = return GooglePlayApp
-  parseField "GTalk"                = return GTalk
   parseField "Internet Explorer"    = return InternetExplorer
+  parseField "Twitter"              = return TwitterApp
   parseField "Windows Media Player" = return WindowsMediaPlayer
   parseField "YouTube-player"       = return YouTubePlayer
-  parseField "Zune"                 = return Zune
-  parseField _                      = mzero
+  parseField app                    = return $ ClientApp app
 
 instance FromField TerminalType where
   parseField "HANDHELD" = return Handheld
