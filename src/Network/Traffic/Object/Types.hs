@@ -26,26 +26,31 @@ import qualified Data.Vector as V
 type ObjectVector = V.Vector Object
 
 -- | Transport protocol.
-data Transport = ICMP | TCP | UDP
+data Transport = ICMP | IGMP | IPv6 | TCP | UDP | VISA
     deriving (Eq, Ord, Show)
 
 -- | Application protocol.
-data Application = BitTorrent | C2DM | DNS | HTTP | ICMP_ | IMAP
-                 | NTP | POP3 | RTSP | SMTP | SIP | XMPP
+data Application = ApplePushNotificationService | BitTorrent | C2DM 
+                 | DHCP | DNS | FTP | HTTP | ICMP_ | IGMP_ 
+                 | IMAP | NTP | PPStream 
+                 | POP3 | QVOD | RTMP | RTP | RTSP | SMTP | SIP 
+                 | Spotify | UPnP | Windows | XBOX | XMPP
     deriving (Eq, Ord, Show)
 
 -- | Functionality description.
 data Functionality = Advertisement | Audio | CloudStorage
-                   | Email | FileDownload | FileSharing
-                   | IMAndPrecense | Media | MMS | SocialNetworking
-                   | System | Video | Weather | WebBrowsing
+                   | Email | FileDownload | FileSharing | Gaming
+                   | IMAndPrecense | InstantMessaging | Maps 
+                   | Media | MMS | PhotoSharing | SoftwareUpdate
+                   | SocialNetworking | System 
+                   | Video | Weather | WebBrowsing
     deriving (Eq, Ord, Show)
 
 -- | Encapsulation.
-data Encapsulation = Encapsulation
+newtype Encapsulation = Encapsulation BS.ByteString
     deriving (Eq, Ord, Show)
 
-data Encryption = TLS_SSL
+newtype Encryption = Encryption BS.ByteString
     deriving (Eq, Ord, Show)
 
 -- | Service provider.
@@ -105,48 +110,75 @@ data Object =
 
 instance FromField Transport where
   parseField "ICMP" = return ICMP
+  parseField "IGMP" = return IGMP
+  parseField "IPv6" = return IPv6
   parseField "TCP"  = return TCP
   parseField "UDP"  = return UDP
+  parseField "VISA" = return VISA
   parseField _      = mzero
 
 instance FromField Application where
+  parseField "Android_C2DM" = return C2DM
   parseField "Android C2DM" = return C2DM
+  parseField "Apple_Push_Notification_Service" = 
+      return ApplePushNotificationService
   parseField "BitTorrent"   = return BitTorrent
+  parseField "DHCP"         = return DHCP
   parseField "DNS"          = return DNS
+  parseField "FTP"          = return FTP
   parseField "HTTP"         = return HTTP
   parseField "ICMP"         = return ICMP_
+  parseField "IGMP"         = return IGMP_
   parseField "IMAP"         = return IMAP
   parseField "NTP"          = return NTP
+  parseField "PPStream"     = return PPStream
   parseField "POP3"         = return POP3
+  parseField "QVOD"         = return QVOD
+  parseField "RTMP"         = return RTMP
+  parseField "RTP"          = return RTP
   parseField "RTSP"         = return RTSP
   parseField "SMTP"         = return SMTP
   parseField "SIP"          = return SIP
+  parseField "Spotify"      = return Spotify
+  parseField "UPnP"         = return UPnP
+  parseField "Windows"      = return Windows
+  parseField "xbox"         = return XBOX
   parseField "XMPP"         = return XMPP
   parseField _              = mzero
 
 instance FromField Functionality where
   parseField "advertisement"     = return Advertisement
+  parseField "audio-playback"    = return Audio
   parseField "audio"             = return Audio
   parseField "cloud-storage"     = return CloudStorage
   parseField "email"             = return Email
   parseField "file-download"     = return FileDownload
+  parseField "file-sharing"      = return FileSharing
   parseField "file sharing"      = return FileSharing
+  parseField "gaming"            = return Gaming
   parseField "IM and presence"   = return IMAndPrecense
+  parseField "instant-messaging" = return InstantMessaging
+  parseField "maps"              = return Maps
+  parseField "media-playback"    = return Media
   parseField "media"             = return Media
   parseField "MMS"               = return MMS
+  parseField "photo-sharing"     = return PhotoSharing
+  parseField "social-networking" = return SocialNetworking
   parseField "social networking" = return SocialNetworking
+  parseField "software-update"   = return SoftwareUpdate
   parseField "system"            = return System
+  parseField "video-playback"    = return Video
   parseField "video"             = return Video
   parseField "weather"           = return Weather
+  parseField "web-browsing"      = return WebBrowsing
   parseField "web browsing"      = return WebBrowsing
   parseField _                   = mzero
 
 instance FromField Encapsulation where
-  parseField _ = mzero
+  parseField = return . Encapsulation
 
 instance FromField Encryption where
-  parseField "TLS-SSL" = return TLS_SSL
-  parseField _         = mzero
+  parseField = return . Encryption
 
 instance FromField ServiceProvider where
   parseField "Amazon"         = return Amazon
@@ -209,7 +241,3 @@ instance FromRecord Object where
                                 <*> v .! 17
                                 <*> v .! 18
     | otherwise       = mzero
-
-
-
-  

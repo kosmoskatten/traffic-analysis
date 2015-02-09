@@ -19,4 +19,3 @@ enumerateByField extractor =
   where
     countObject acc obj = M.insertWithKey incCounter (extractor obj) 1 acc
     incCounter _ _ v = v + 1
-
