@@ -1,12 +1,18 @@
 module Network.Traffic.Object.Enumerator
-       ( enumerateByApplication
+       ( enumerateByTransport
+       , enumerateByApplication
        ) where
 
 import qualified Data.Map.Strict as M
 import qualified Data.Vector as V
 import Network.Traffic.Object.Types
 
--- | Enumerate all kind of applications, and how may of each
+-- | Enumerate all kind of transport, and how many of each transport
+-- there are.
+enumerateByTransport :: ObjectVector -> M.Map Transport Int
+enumerateByTransport = enumerateByField transport
+
+-- | Enumerate all kind of applications, and how many of each
 -- application there are.
 enumerateByApplication :: ObjectVector -> M.Map (Maybe Application) Int
 enumerateByApplication = enumerateByField application
