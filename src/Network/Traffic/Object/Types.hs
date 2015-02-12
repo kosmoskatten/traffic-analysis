@@ -90,7 +90,7 @@ data Object =
                                        -- transmission since measurement
                                        -- start. Microsecond precision.
            , duration        :: !Float -- In seconds.
-           , transport       :: !Transport
+           , transport       :: !(Maybe Transport)
            , ulPackets       :: !Int -- Number of uplink packets.
            , dlPackets       :: !Int -- Number of downlink packets.
            , ulBytes         :: !Integer -- Number of uplink bytes.

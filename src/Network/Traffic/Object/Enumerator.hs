@@ -9,7 +9,7 @@ import Network.Traffic.Object.Types
 
 -- | Enumerate all kind of transport, and how many of each transport
 -- there are.
-enumerateByTransport :: ObjectVector -> M.Map Transport Int
+enumerateByTransport :: ObjectVector -> M.Map (Maybe Transport) Int
 enumerateByTransport = enumerateByField transport
 
 -- | Enumerate all kind of applications, and how many of each
