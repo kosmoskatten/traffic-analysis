@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
 module Network.Traffic.Object.Types
        ( Object (..)
        , ObjectVector
@@ -15,6 +15,7 @@ module Network.Traffic.Object.Types
        ) where
 
 import Control.Applicative ((<$>), (<*>))
+import Control.DeepSeq (NFData())
 import Control.Monad (mzero)
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
@@ -22,12 +23,13 @@ import Data.Csv ( FromField (parseField)
                 , FromRecord (parseRecord)
                 , (.!) )
 import qualified Data.Vector as V
+import GHC.Generics (Generic())
 
 type ObjectVector = V.Vector Object
 
 -- | Transport protocol.
 data Transport = ICMP | IGMP | IPv6 | TCP | UDP | VISA
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 -- | Application protocol.
 data Application = ApplePushNotificationService | BitTorrent | C2DM 
@@ -35,7 +37,7 @@ data Application = ApplePushNotificationService | BitTorrent | C2DM
                  | IMAP | NTP | PPStream 
                  | POP3 | QVOD | RTMP | RTP | RTSP | SMTP | SIP 
                  | Spotify | UPnP | Windows | XBOX | XMPP
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 -- | Functionality description.
 data Functionality = Advertisement | Audio | CloudStorage
@@ -44,42 +46,42 @@ data Functionality = Advertisement | Audio | CloudStorage
                    | Media | MMS | PhotoSharing | SoftwareUpdate
                    | SocialNetworking | System 
                    | Video | Weather | WebBrowsing
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 -- | Encapsulation.
 newtype Encapsulation = Encapsulation BS.ByteString
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 newtype Encryption = Encryption BS.ByteString
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 -- | Service provider.
 data ServiceProvider = Amazon | Facebook | Google | GooglePlay | Netflix
                      | Microsoft | P2P | Twitter | Yahoo | YouTube
                      | ServiceProvider !BS.ByteString
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 -- | Client Application.
 data ClientApp = AndroidMediaPlayer | InternetExplorer | TwitterApp
                | WindowsMediaPlayer | YouTubePlayer
                | ClientApp !BS.ByteString
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 -- | Terminal type.
 data TerminalType = Handheld | M2M | PC | Router | Tablet
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 -- | Vendor name.
 newtype Vendor = Vendor BS.ByteString
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 -- | Operating system.
 data OS = OS BS.ByteString
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 -- Direction.
 data Direction = Downlink | Uplink
-    deriving (Eq, Ord, Show)
+    deriving (Eq, Generic, Ord, Show)
 
 -- | An object is the aggregation of data packets from a continous
 -- transmission flow of a single IP flow.
@@ -106,7 +108,7 @@ data Object =
            , os              :: !(Maybe OS)
            , direction       :: !Direction -- Direction of the first packet.
            }
-    deriving Show
+    deriving (Generic, Show)
 
 instance FromField Transport where
   parseField "ICMP" = return ICMP
@@ -241,3 +243,16 @@ instance FromRecord Object where
                                 <*> v .! 17
                                 <*> v .! 18
     | otherwise       = mzero
+
+instance NFData Transport where
+instance NFData Application where
+instance NFData Functionality where
+instance NFData Encapsulation where
+instance NFData Encryption where
+instance NFData ServiceProvider where
+instance NFData ClientApp where
+instance NFData TerminalType where
+instance NFData Vendor where
+instance NFData OS where
+instance NFData Direction where
+instance NFData Object where
