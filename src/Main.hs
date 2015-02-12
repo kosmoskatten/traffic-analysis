@@ -9,7 +9,7 @@ main :: IO ()
 main = do
   file <- LBS.readFile "hour.csv"
   file `deepseq` putStrLn $ "File read: " ++ show (LBS.length file)
-  let result = decodeObjects file
+  let result = decodeObjectsPar file
   case result of
     Right objects -> do
                 putStrLn $ "Length is: " ++ show (V.length objects)

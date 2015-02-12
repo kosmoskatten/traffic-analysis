@@ -3,7 +3,8 @@ module Network.Traffic.Object
        ) where
 
 import Network.Traffic.Object.Enumerator as Export (enumerateByApplication)
-import Network.Traffic.Object.Reader as Export (decodeObjects)
+import Network.Traffic.Object.Reader as Export ( decodeObjects
+                                               , decodeObjectsPar )
 import Network.Traffic.Object.Types as Export ( Object (..)
                                               , ObjectVector
                                               , Transport (..)
