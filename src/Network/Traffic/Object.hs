@@ -3,6 +3,7 @@ module Network.Traffic.Object
        ) where
 
 import Network.Traffic.Object.Enumerator as Export ( Enumeration
+                                                   , Quantification
                                                    , enumerateByTransport 
                                                    , enumerateByApplication
                                                    , quantifyEnumeration )
