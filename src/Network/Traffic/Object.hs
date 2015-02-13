@@ -2,8 +2,10 @@ module Network.Traffic.Object
        ( module Export
        ) where
 
-import Network.Traffic.Object.Enumerator as Export ( enumerateByTransport 
-                                                   , enumerateByApplication )
+import Network.Traffic.Object.Enumerator as Export ( Enumeration
+                                                   , enumerateByTransport 
+                                                   , enumerateByApplication
+                                                   , quantifyEnumeration )
 import Network.Traffic.Object.Reader as Export ( decodeObjects
                                                , decodeObjectsPar )
 import Network.Traffic.Object.Types as Export ( Object (..)
