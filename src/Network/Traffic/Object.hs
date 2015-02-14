@@ -6,6 +6,9 @@ import Network.Traffic.Object.Enumerator as Export ( Enumeration
                                                    , Quantification
                                                    , enumerateByTransport 
                                                    , enumerateByApplication
+                                                   , enumerateByFunctionality
+                                                   , enumerateByServiceProvider
+                                                   , enumerateByClientApp
                                                    , quantifyEnumeration )
 import Network.Traffic.Object.Reader as Export ( decodeObjects
                                                , decodeObjectsPar )

@@ -4,6 +4,9 @@ module Network.Traffic.Object.Enumerator
        , Quantification
        , enumerateByTransport
        , enumerateByApplication
+       , enumerateByFunctionality
+       , enumerateByServiceProvider
+       , enumerateByClientApp
        , quantifyEnumeration
        ) where
 
@@ -27,6 +30,21 @@ enumerateByTransport = enumerateByField transport
 -- application there are.
 enumerateByApplication :: ObjectVector -> Enumeration
 enumerateByApplication = enumerateByField application
+
+-- | Enumerate all kind of functionality, and how many of each
+-- function there are.
+enumerateByFunctionality :: ObjectVector -> Enumeration
+enumerateByFunctionality = enumerateByField functionality
+
+-- | Enumerate all kind of service providers, and how many of each
+-- provider there are.
+enumerateByServiceProvider :: ObjectVector -> Enumeration
+enumerateByServiceProvider = enumerateByField serviceProvider
+
+-- | Enumerate all kind of client apps, and how many of each apps
+-- there are.
+enumerateByClientApp :: ObjectVector -> Enumeration
+enumerateByClientApp = enumerateByField clientApp
 
 -- | Quantify an enumeration.
 quantifyEnumeration :: Enumeration -> Quantification

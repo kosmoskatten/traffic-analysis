@@ -27,6 +27,12 @@ analyzeObjects objects = do
     quantifyEnumeration (enumerateByTransport objects)
   printQuantification "application protocols" $
     quantifyEnumeration (enumerateByApplication objects)
+  printQuantification "network functionality" $
+    quantifyEnumeration (enumerateByFunctionality objects)
+  printQuantification "service provider" $
+    quantifyEnumeration (enumerateByServiceProvider objects)
+  printQuantification "client app" $
+    quantifyEnumeration (enumerateByClientApp objects)    
 
 printQuantification :: String -> Quantification -> IO ()
 printQuantification label (total, quantList) = do
