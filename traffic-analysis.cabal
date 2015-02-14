@@ -20,6 +20,7 @@ executable traffic-analysis
                        , Network.Traffic.Object.Reader
   -- other-extensions:    
   build-depends:       base >=4.7 && <4.8
+                       , async >= 2.0.2 && <2.1
                        , bytestring >= 0.10.4.0 && <0.10.5
                        , cassava >= 0.4.2.1 && <0.4.3
                        , containers >= 0.5.5.1 && <0.5.6
