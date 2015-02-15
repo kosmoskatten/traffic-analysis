@@ -1,5 +1,6 @@
 module Main where
 
+import CommandLineParser
 import Control.Concurrent (threadDelay)
 import Control.Concurrent.Async (async, cancel)
 import Control.Monad (forM_, forever)
