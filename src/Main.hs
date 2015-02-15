@@ -5,13 +5,14 @@ import Control.Concurrent.Async (async, cancel)
 import Control.Monad (forM_, forever)
 import qualified Data.ByteString.Lazy as LBS
 import Network.Traffic.Object
+import System.Console.Readline (readline, addHistory)
 import System.Environment (getArgs)
 import System.IO (hPutChar, hFlush, stdout)
 import Text.Printf (printf)
 
 main :: IO ()
-main = do
-  t    <- async ticker
+main = repl
+  {-t    <- async ticker
   file <- LBS.readFile =<< head `fmap` getArgs
   case decodeObjectsPar file of
     Right objects -> do
@@ -19,7 +20,16 @@ main = do
       analyzeObjects objects                
     Left err      -> do
       cancel t
-      print err
+      print err-}
+
+repl :: IO ()
+repl = do
+  line <- readline "> "
+  case line of
+    Nothing -> return ()
+    Just line' -> do
+      addHistory line'
+      repl
 
 analyzeObjects :: ObjectVector -> IO ()
 analyzeObjects objects = do
