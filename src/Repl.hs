@@ -1,9 +1,14 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Repl (Repl, runRepl, liftIO) where
+module Repl
+       ( Repl
+       , get
+       , put
+       , runRepl
+       , liftIO ) where
 
 import Control.Applicative (Applicative)
 import Control.Monad.State (StateT, MonadIO, liftIO, runStateT)
-import Control.Monad.State.Class (MonadState)
+import Control.Monad.State.Class (MonadState, get, put)
 
 newtype Repl s a =
   Repl { extractRepl :: StateT s IO a }

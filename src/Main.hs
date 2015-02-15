@@ -6,7 +6,7 @@ import Control.Concurrent.Async (async, cancel)
 import Control.Monad (forM_, forever, void, when)
 import qualified Data.ByteString.Lazy as LBS
 import Network.Traffic.Object
-import Repl (Repl, liftIO, runRepl)
+import Repl (Repl, get, liftIO, put, runRepl)
 import System.Console.Readline (readline, addHistory)
 import System.Environment (getArgs)
 import System.IO (hPutChar, hFlush, stdout)
@@ -14,15 +14,6 @@ import Text.Printf (printf)
 
 main :: IO ()
 main = void $ runRepl repl Nothing
-  {-t    <- async ticker
-  file <- LBS.readFile =<< head `fmap` getArgs
-  case decodeObjectsPar file of
-    Right objects -> do
-      cancel t
-      analyzeObjects objects                
-    Left err      -> do
-      cancel t
-      print err-}
 
 repl :: Repl (Maybe ObjectVector) ()
 repl = do
@@ -42,7 +33,21 @@ handleCommandLine line =
       handleCommand command
 
 handleCommand :: Command -> Repl (Maybe ObjectVector) Bool
-handleCommand (File filePath) = return True
+handleCommand EmptyLine = return True
+
+handleCommand (File filePath) = do
+  put Nothing
+  t    <- liftIO $ async ticker
+  file <- liftIO $ LBS.readFile filePath
+  case decodeObjectsPar file of
+    Right objects -> do
+      liftIO $ cancel t
+      put $ Just objects
+    Left err      -> do
+      liftIO $ cancel t
+      liftIO $ putStrLn err
+  return True
+      
 handleCommand Help = return True
 handleCommand Quit = return False
 

@@ -3,32 +3,30 @@ module CommandLineParser
        , parseCommandLine
        ) where
 
-import Control.Applicative ((<$>))
+import Control.Applicative ((<$>), (*>))
 import Text.Parsec
 import Text.Parsec.String
 
-data Command = File !FilePath | Help | Quit
+data Command = EmptyLine | File !FilePath | Help | Quit
     deriving Show
 
 parseCommandLine :: String -> Either ParseError Command
 parseCommandLine = parse commandLine ""
 
 commandLine :: Parser Command
-commandLine = file
-              <|> quit
-              <|> help
+commandLine = spaces *> (emptyLine <|> file <|> quit <|> help)
+
+emptyLine :: Parser Command
+emptyLine = eof >> return EmptyLine
 
 file :: Parser Command
-file = do
-  string "file"
-  spaces
-  File <$> filePath
+file = string "file" *> spaces *> (File <$> filePath)
 
 help :: Parser Command
-help = string "help" >> return Help
+help = string "help" *> return Help
 
 quit :: Parser Command
-quit = string "quit" >> return Quit
+quit = string "quit" *> return Quit
 
 filePath :: Parser FilePath
 filePath = many1 (letter
