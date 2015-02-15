@@ -1,9 +1,9 @@
-module Main where
+module Main (main) where
 
-import CommandLineParser
+import CommandLineParser (Command (..), parseCommandLine)
 import Control.Concurrent (threadDelay)
 import Control.Concurrent.Async (async, cancel)
-import Control.Monad (forM_, forever)
+import Control.Monad (forM_, forever, when)
 import qualified Data.ByteString.Lazy as LBS
 import Network.Traffic.Object
 import System.Console.Readline (readline, addHistory)
@@ -30,7 +30,19 @@ repl = do
     Nothing -> return ()
     Just line' -> do
       addHistory line'
-      repl
+      continue <- handleCommandLine line'
+      when continue repl
+
+handleCommandLine :: String -> IO Bool
+handleCommandLine line =
+  case parseCommandLine line of
+    Left err      -> putStrLn (show err) >> return True
+    Right command -> handleCommand command
+
+handleCommand :: Command -> IO Bool
+handleCommand (File filePath) = return True
+handleCommand Help = return True
+handleCommand Quit = return False
 
 analyzeObjects :: ObjectVector -> IO ()
 analyzeObjects objects = do
