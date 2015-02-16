@@ -13,18 +13,28 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Vector as V
 import GHC.Int (Int64)
-import Network.Traffic.Object.Types
+import Network.Traffic.Object.Types (ObjectVector, Object (..))
 
 type Enumeration = M.Map Text Int64
 type Quantification = (Int64, [(Text, Int64, Double)])
 
-data EnumerationTarget = Transport
-    deriving (Show)                      
+data EnumerationTarget = TTransport
+                       | TApplication 
+                       | TFunctionality
+                       | TServiceProvider
+                       | TClientApp
+                       | TTerminalType
+    deriving (Show)
 
 -- | Enumerate an object vector in its target. Each instance value of
 -- the target is accounted from the object vector.
 enumerateBy :: EnumerationTarget -> ObjectVector -> Enumeration
-enumerateBy Transport = enumerateByField transport
+enumerateBy TTransport = enumerateByField transport
+enumerateBy TApplication = enumerateByField application
+enumerateBy TFunctionality = enumerateByField functionality
+enumerateBy TServiceProvider = enumerateByField serviceProvider
+enumerateBy TClientApp = enumerateByField clientApp
+enumerateBy TTerminalType = enumerateByField terminalType
 
 -- | Quantify an enumeration.
 quantifyEnumeration :: Enumeration -> Quantification
