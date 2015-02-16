@@ -58,13 +58,13 @@ newtype Encryption = Encryption BS.ByteString
 -- | Service provider.
 data ServiceProvider = Amazon | Facebook | Google | GooglePlay | Netflix
                      | Microsoft | P2P | Twitter | Yahoo | YouTube
-                     | ServiceProvider !BS.ByteString
+                     | Service !BS.ByteString
     deriving (Eq, Generic, Ord, Show)
 
 -- | Client Application.
 data ClientApp = AndroidMediaPlayer | InternetExplorer | TwitterApp
                | WindowsMediaPlayer | YouTubePlayer
-               | ClientApp !BS.ByteString
+               | App !BS.ByteString
     deriving (Eq, Generic, Ord, Show)
 
 -- | Terminal type.
@@ -192,7 +192,7 @@ instance FromField ServiceProvider where
   parseField "Twitter"        = return Twitter
   parseField "Yahoo"          = return Yahoo
   parseField "YouTube"        = return YouTube
-  parseField provider         = return $ ServiceProvider provider
+  parseField provider         = return $ Service provider
 
 instance FromField ClientApp where
   parseField "Android Media Player" = return AndroidMediaPlayer
@@ -200,7 +200,7 @@ instance FromField ClientApp where
   parseField "Twitter"              = return TwitterApp
   parseField "Windows Media Player" = return WindowsMediaPlayer
   parseField "YouTube-player"       = return YouTubePlayer
-  parseField app                    = return $ ClientApp app
+  parseField app                    = return $ App app
 
 instance FromField TerminalType where
   parseField "HANDHELD" = return Handheld

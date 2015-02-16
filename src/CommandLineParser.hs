@@ -41,12 +41,12 @@ quit :: Parser Command
 quit = string "quit" *> return Quit
 
 enumerationTarget :: Parser EnumerationTarget
-enumerationTarget = try (string "transport") *> return TTransport
-                    <|> try (string "application") *> return TApplication
-                    <|> try (string "functionality") *> return TFunctionality
-                    <|> try (string "serviceprovider") *> return TServiceProvider
-                    <|> try (string "clientapp") *> return TClientApp
-                    <|> try (string "terminaltype") *> return TTerminalType
+enumerationTarget = try (string "transport") *> return Transport
+                    <|> try (string "application") *> return Application
+                    <|> try (string "functionality") *> return Functionality
+                    <|> try (string "serviceprovider") *> return ServiceProvider
+                    <|> try (string "clientapp") *> return ClientApp
+                    <|> try (string "terminaltype") *> return TerminalType
 
 filePath :: Parser FilePath
 filePath = many1 ( letter

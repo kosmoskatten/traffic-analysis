@@ -18,23 +18,23 @@ import Network.Traffic.Object.Types (ObjectVector, Object (..))
 type Enumeration = M.Map Text Int64
 type Quantification = (Int64, [(Text, Int64, Double)])
 
-data EnumerationTarget = TTransport
-                       | TApplication 
-                       | TFunctionality
-                       | TServiceProvider
-                       | TClientApp
-                       | TTerminalType
+data EnumerationTarget = Transport
+                       | Application 
+                       | Functionality
+                       | ServiceProvider
+                       | ClientApp
+                       | TerminalType
     deriving (Show)
 
 -- | Enumerate an object vector in its target. Each instance value of
 -- the target is accounted from the object vector.
 enumerateBy :: EnumerationTarget -> ObjectVector -> Enumeration
-enumerateBy TTransport = enumerateByField transport
-enumerateBy TApplication = enumerateByField application
-enumerateBy TFunctionality = enumerateByField functionality
-enumerateBy TServiceProvider = enumerateByField serviceProvider
-enumerateBy TClientApp = enumerateByField clientApp
-enumerateBy TTerminalType = enumerateByField terminalType
+enumerateBy Transport = enumerateByField transport
+enumerateBy Application = enumerateByField application
+enumerateBy Functionality = enumerateByField functionality
+enumerateBy ServiceProvider = enumerateByField serviceProvider
+enumerateBy ClientApp = enumerateByField clientApp
+enumerateBy TerminalType = enumerateByField terminalType
 
 -- | Quantify an enumeration.
 quantifyEnumeration :: Enumeration -> Quantification
