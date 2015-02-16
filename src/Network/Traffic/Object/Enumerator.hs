@@ -1,12 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Network.Traffic.Object.Enumerator
        ( Enumeration
+       , EnumerationTarget (..)
        , Quantification
-       , enumerateByTransport
-       , enumerateByApplication
-       , enumerateByFunctionality
-       , enumerateByServiceProvider
-       , enumerateByClientApp
+       , enumerateBy
        , quantifyEnumeration
        ) where
 
@@ -21,30 +18,13 @@ import Network.Traffic.Object.Types
 type Enumeration = M.Map Text Int64
 type Quantification = (Int64, [(Text, Int64, Double)])
 
--- | Enumerate all kind of transport, and how many of each transport
--- there are.
-enumerateByTransport :: ObjectVector -> Enumeration
-enumerateByTransport = enumerateByField transport
+data EnumerationTarget = Transport
+    deriving (Show)                      
 
--- | Enumerate all kind of applications, and how many of each
--- application there are.
-enumerateByApplication :: ObjectVector -> Enumeration
-enumerateByApplication = enumerateByField application
-
--- | Enumerate all kind of functionality, and how many of each
--- function there are.
-enumerateByFunctionality :: ObjectVector -> Enumeration
-enumerateByFunctionality = enumerateByField functionality
-
--- | Enumerate all kind of service providers, and how many of each
--- provider there are.
-enumerateByServiceProvider :: ObjectVector -> Enumeration
-enumerateByServiceProvider = enumerateByField serviceProvider
-
--- | Enumerate all kind of client apps, and how many of each apps
--- there are.
-enumerateByClientApp :: ObjectVector -> Enumeration
-enumerateByClientApp = enumerateByField clientApp
+-- | Enumerate an object vector in its target. Each instance value of
+-- the target is accounted from the object vector.
+enumerateBy :: EnumerationTarget -> ObjectVector -> Enumeration
+enumerateBy Transport = enumerateByField transport
 
 -- | Quantify an enumeration.
 quantifyEnumeration :: Enumeration -> Quantification

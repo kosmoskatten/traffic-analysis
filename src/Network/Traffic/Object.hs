@@ -3,12 +3,9 @@ module Network.Traffic.Object
        ) where
 
 import Network.Traffic.Object.Enumerator as Export ( Enumeration
+                                                   , EnumerationTarget (..)
                                                    , Quantification
-                                                   , enumerateByTransport 
-                                                   , enumerateByApplication
-                                                   , enumerateByFunctionality
-                                                   , enumerateByServiceProvider
-                                                   , enumerateByClientApp
+                                                   , enumerateBy
                                                    , quantifyEnumeration )
 import Network.Traffic.Object.Reader as Export ( decodeObjects
                                                , decodeObjectsPar )
