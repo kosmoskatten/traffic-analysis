@@ -60,12 +60,22 @@ toString (total, quantList) =
           let l1 = printf "Item %s count: %ld (%.2f procent of total)."
                    (T.unpack text) (C.count counter) 
                    (C.count counter `perc` C.count total)
-              l2 = printf "DL bytes: %ld (%.2f procent of total)."
+              l2 = printf " DL bytes: %ld (%.2f procent of total)."
                    (C.downlinkBytes counter) 
                    (C.downlinkBytes counter `perc` C.downlinkBytes total)
-          in unlines [l1, l2]
+              l3 = printf " DL packets: %ld (%.2f procent of total)."
+                   (C.downlinkPackets counter)
+                   (C.downlinkPackets counter `perc` C.downlinkPackets total)
+              l4 = printf " UL bytes: %ld (%.2f procent of total)."
+                   (C.uplinkBytes counter) 
+                   (C.uplinkBytes counter `perc` C.uplinkBytes total)
+              l5 = printf " UL packets: %ld (%.2f procent of total)."
+                   (C.uplinkPackets counter)
+                   (C.uplinkPackets counter `perc` C.uplinkPackets total)
+          in unlines [l1, l2, l3, l4, l5]
 
       perc :: Int64 -> Int64 -> Double
+      {-# INLINE perc #-}
       perc _ 0 = 0.0
       perc !x !y =
           let x' = fromIntegral x
