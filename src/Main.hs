@@ -3,12 +3,13 @@ module Main (main) where
 import CommandLineParser (Command (..), parseCommandLine)
 import Control.Concurrent (threadDelay)
 import Control.Concurrent.Async (async, cancel)
+import Control.DeepSeq (($!!))
 import Control.Monad (forever, void, when)
 import qualified Data.ByteString.Lazy as LBS
 import Network.Traffic.Object
 import Repl (Repl, get, liftIO, put, runRepl)
 import System.Console.Readline (readline, addHistory)
-import System.IO (hPutChar, hFlush, stdout)
+import System.IO (hPutChar, hPutStrLn, hFlush, stdout)
 
 main :: IO ()
 main = void $ runRepl repl Nothing
@@ -35,24 +36,31 @@ handleCommand EmptyLine = return True
 handleCommand (Enumerate target) = do
   state <- get
   case state of
-    Nothing      -> do liftIO $ putStrLn "No file is loaded"
-                       return True
-    Just objects -> do liftIO $ putStrLn $ printable target objects
-                       return True
-
-handleCommand (File filePath) = do
-  put Nothing
-  t    <- liftIO $ async ticker
-  file <- liftIO $ LBS.readFile filePath
-  case decodeObjectsPar file of
-    Right objects -> do liftIO $ cancel t
-                        put $ Just objects
-    Left err      -> do liftIO $ cancel t
-                        liftIO $ putStrLn err
+    Nothing      -> liftIO $ putStrLn "No file is loaded"
+    Just objects -> do p <- timedAction (return $!! printable target objects)
+                       liftIO $ putStrLn p
   return True
+
+handleCommand (File filePath) =
+    timedAction $ do
+      put Nothing
+      file <- liftIO $ LBS.readFile filePath
+      case decodeObjectsPar file of
+        Right objects -> put $ Just objects
+        Left err      -> liftIO $ putStrLn err
+      return True
       
 handleCommand Help = return True
 handleCommand Quit = return False
+
+timedAction :: Repl s a -> Repl s a
+timedAction action = do
+    t <- liftIO $ async ticker
+    result <- action
+    liftIO $ do cancel t
+                hPutStrLn stdout ""
+                hFlush stdout
+    return result
 
 ticker :: IO ()
 ticker =
