@@ -6,7 +6,9 @@ import Network.Traffic.Object.Counter as Export ( Counter (..) )
 import Network.Traffic.Object.Enumerator as Export ( Enumeration
                                                    , EnumerationTarget (..)
                                                    , Quantification
+                                                   , printable
                                                    , enumerateBy
+                                                   , toString
                                                    , quantifyEnumeration )
 import Network.Traffic.Object.Reader as Export ( decodeObjects
                                                , decodeObjectsPar )

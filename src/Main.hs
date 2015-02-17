@@ -3,13 +3,12 @@ module Main (main) where
 import CommandLineParser (Command (..), parseCommandLine)
 import Control.Concurrent (threadDelay)
 import Control.Concurrent.Async (async, cancel)
-import Control.Monad (forM_, forever, void, when)
+import Control.Monad (forever, void, when)
 import qualified Data.ByteString.Lazy as LBS
 import Network.Traffic.Object
 import Repl (Repl, get, liftIO, put, runRepl)
 import System.Console.Readline (readline, addHistory)
 import System.IO (hPutChar, hFlush, stdout)
-import Text.Printf (printf)
 
 main :: IO ()
 main = void $ runRepl repl Nothing
@@ -38,8 +37,7 @@ handleCommand (Enumerate target) = do
   case state of
     Nothing      -> do liftIO $ putStrLn "No file is loaded"
                        return True
-    Just objects -> do liftIO $ printQuantification target $
-                          quantifyEnumeration (enumerateBy target objects)
+    Just objects -> do liftIO $ putStrLn $ printable target objects
                        return True
 
 handleCommand (File filePath) = do
@@ -55,12 +53,6 @@ handleCommand (File filePath) = do
       
 handleCommand Help = return True
 handleCommand Quit = return False
-
-printQuantification :: EnumerationTarget -> Quantification -> IO ()
-printQuantification target (total, quantList) = do
-  printf "\nEnumeration of %s. Total # of items: %ld\n" (show target) total
-  forM_ quantList $ \(name, _, perc) ->
-    printf " Item %s has %.2f percent.\n" (show name) perc
 
 ticker :: IO ()
 ticker =

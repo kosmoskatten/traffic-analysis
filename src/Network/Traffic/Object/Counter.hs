@@ -3,6 +3,7 @@ module Network.Traffic.Object.Counter
        ( Counter (..)
        , fromObject
        , add
+       , empty
        ) where
 
 import GHC.Int (Int64)
@@ -16,6 +17,7 @@ data Counter =
           , uplinkBytes     :: {-# UNPACK #-} !Int64
           , downlinkBytes   :: {-# UNPACK #-} !Int64
           }
+    deriving (Show)
 
 -- | Initialize a counter from an object.
 fromObject :: Object -> Counter
@@ -38,3 +40,11 @@ add c1 c2 =
           , uplinkBytes     = uplinkBytes c1 + uplinkBytes c2
           , downlinkBytes   = downlinkBytes c1 + downlinkBytes c2
           }
+
+empty :: Counter
+empty =
+    Counter { count           = 0
+            , uplinkPackets   = 0
+            , downlinkPackets = 0
+            , uplinkBytes     = 0
+            , downlinkBytes   = 0 }
