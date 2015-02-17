@@ -2,6 +2,7 @@ module Network.Traffic.Object
        ( module Export
        ) where
 
+import Network.Traffic.Object.Counter as Export ( Counter (..) )
 import Network.Traffic.Object.Enumerator as Export ( Enumeration
                                                    , EnumerationTarget (..)
                                                    , Quantification

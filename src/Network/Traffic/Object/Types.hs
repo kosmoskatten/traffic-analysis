@@ -24,6 +24,7 @@ import Data.Csv ( FromField (parseField)
                 , (.!) )
 import qualified Data.Vector as V
 import GHC.Generics (Generic())
+import GHC.Int (Int64)
 
 type ObjectVector = V.Vector Object
 
@@ -91,10 +92,10 @@ data Object =
                                        -- start. Microsecond precision.
            , duration        :: !Float -- In seconds.
            , transport       :: !(Maybe Transport)
-           , ulPackets       :: !Int -- Number of uplink packets.
-           , dlPackets       :: !Int -- Number of downlink packets.
-           , ulBytes         :: !Integer -- Number of uplink bytes.
-           , dlBytes         :: !Integer -- Number of downlink bytes.
+           , ulPackets       :: !Int64 -- Number of uplink packets.
+           , dlPackets       :: !Int64 -- Number of downlink packets.
+           , ulBytes         :: !Int64 -- Number of uplink bytes.
+           , dlBytes         :: !Int64 -- Number of downlink bytes.
            , flowId          :: !LBS.ByteString -- 64 bit flow id.
            , application     :: !(Maybe Application)
            , functionality   :: !(Maybe Functionality)
