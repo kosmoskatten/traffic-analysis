@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE DeriveGeneric, RecordWildCards #-}
 module Network.Traffic.Object.Counter
        ( Counter (..)
        , fromObject
@@ -6,6 +6,8 @@ module Network.Traffic.Object.Counter
        , empty
        ) where
 
+import Control.DeepSeq (NFData)
+import GHC.Generics (Generic)
 import GHC.Int (Int64)
 import Network.Traffic.Object.Types (Object (..))
 
@@ -17,7 +19,9 @@ data Counter =
           , uplinkBytes     :: {-# UNPACK #-} !Int64
           , downlinkBytes   :: {-# UNPACK #-} !Int64
           }
-    deriving (Show)
+    deriving (Generic, Show)
+
+instance NFData Counter where
 
 -- | Initialize a counter from an object.
 fromObject :: Object -> Counter
