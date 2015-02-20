@@ -33,7 +33,7 @@ handleCommandLine line =
 handleCommand :: Command -> Repl (Maybe ObjectVector) Bool
 handleCommand EmptyLine = return True
 
-handleCommand (Enumerate target) = do
+handleCommand (Enumerate target _) = do
   state <- get
   case state of
     Nothing      -> liftIO $ putStrLn "No file is loaded"

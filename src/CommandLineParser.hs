@@ -1,15 +1,19 @@
 module CommandLineParser
        ( Command (..)
+       , Filter (..)
        , parseCommandLine
        ) where
 
-import Control.Applicative ((<$>), (*>), (<*))
+import Control.Applicative ((<$>), (*>), (<*), (<*>))
 import Network.Traffic.Object (EnumerationTarget (..))
 import Text.Parsec
 import Text.Parsec.String
 
+data Filter = Filter
+    deriving Show
+
 data Command = EmptyLine 
-             | Enumerate !EnumerationTarget
+             | Enumerate !EnumerationTarget !(Maybe Filter)
              | File !FilePath 
              | Help 
              | Quit
@@ -32,7 +36,8 @@ emptyLine :: Parser Command
 emptyLine = eof *> return EmptyLine
 
 enumerate :: Parser Command
-enumerate = string "enumerate" *> spaces *> (Enumerate <$> enumerationTarget)
+enumerate = string "enumerate" *> spaces *> 
+            (Enumerate <$> enumerationTarget <*> optionMaybe filterSpec)
 
 file :: Parser Command
 file = string "file" *> spaces *> (File <$> filePath)
@@ -50,6 +55,9 @@ enumerationTarget = try (string "transport") *> return Transport
                     <|> try (string "serviceprovider") *> return ServiceProvider
                     <|> try (string "clientapp") *> return ClientApp
                     <|> try (string "terminaltype") *> return TerminalType
+
+filterSpec :: Parser Filter
+filterSpec = space *> spaces *> string "where" *> return Filter
 
 filePath :: Parser FilePath
 filePath = many1 ( letter
