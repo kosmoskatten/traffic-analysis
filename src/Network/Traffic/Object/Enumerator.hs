@@ -9,7 +9,6 @@ module Network.Traffic.Object.Enumerator
        , quantifyEnumeration
        ) where
 
-import Control.Monad.Par
 import qualified Data.Map.Strict as M
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -40,7 +39,7 @@ printable target = toString . quantifyEnumeration . enumerateBy target
 -- the target is accounted from the object vector.
 enumerateBy :: EnumerationTarget -> ObjectVector -> Enumeration
 enumerateBy Transport = enumerateByField transport
-enumerateBy Application = enumerateByFieldPar application
+enumerateBy Application = enumerateByField application
 enumerateBy Functionality = enumerateByField functionality
 enumerateBy ServiceProvider = enumerateByField serviceProvider
 enumerateBy ClientApp = enumerateByField clientApp
@@ -102,20 +101,3 @@ enumerateByField extractor = V.foldl' countObject M.empty
     {-# INLINE toText #-}
     toText (Just x) = T.pack $ show x
     toText Nothing = "Unspecified"
-
-enumerateByFieldPar :: (Ord a, Show a)
-                       => (Object -> Maybe a) -> ObjectVector -> Enumeration
-enumerateByFieldPar extractor = go
-    where
-      go :: ObjectVector -> Enumeration
-      go objects 
-          | V.length objects > 20000000 =
-              runPar $ do
-                let pivot = V.length objects `div` 2
-                    parts = V.splitAt pivot objects
-                l <- spawnP $ go (fst parts)
-                r <- spawnP $ go (snd parts)
-                ll <- get l
-                rr <- get r
-                return $ M.unionWith add ll rr
-          | otherwise = enumerateByField extractor objects
