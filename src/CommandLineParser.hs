@@ -3,7 +3,7 @@ module CommandLineParser
        , parseCommandLine
        ) where
 
-import Control.Applicative ((<$>), (*>))
+import Control.Applicative ((<$>), (*>), (<*))
 import Network.Traffic.Object (EnumerationTarget (..))
 import Text.Parsec
 import Text.Parsec.String
@@ -20,10 +20,13 @@ parseCommandLine = parse commandLine ""
 
 commandLine :: Parser Command
 commandLine = spaces *> ( emptyLine 
-                          <|> enumerate
-                          <|> file 
-                          <|> quit
-                          <|> help )
+                          <|> enumerate <* eof'
+                          <|> file <* eof'
+                          <|> quit <* eof'
+                          <|> help <* eof' )
+
+eof' :: Parser ()
+eof' = spaces >> eof
 
 emptyLine :: Parser Command
 emptyLine = eof *> return EmptyLine
