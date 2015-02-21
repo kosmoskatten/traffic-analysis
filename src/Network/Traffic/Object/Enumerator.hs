@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings, BangPatterns #-}
 module Network.Traffic.Object.Enumerator
        ( Enumeration
-       , EnumerationTarget (..)
        , Quantification
        , printable
        , enumerateBy
@@ -18,19 +17,13 @@ import Network.Traffic.Object.Counter ( Counter (..)
                                       , add
                                       , fromObject )
 import qualified Network.Traffic.Object.Counter as C
-import Network.Traffic.Object.Types (ObjectVector, Object (..))
+import Network.Traffic.Object.Types ( EnumerationTarget (..)
+                                    , ObjectVector
+                                    , Object (..) )
 import Text.Printf (printf)
 
 type Enumeration = M.Map Text Counter
 type Quantification = (Counter, [(Text, Counter)])
-
-data EnumerationTarget = Transport
-                       | Application 
-                       | Functionality
-                       | ServiceProvider
-                       | ClientApp
-                       | TerminalType
-    deriving (Show)
 
 printable :: EnumerationTarget -> ObjectVector -> String
 printable target = toString . quantifyEnumeration . enumerateBy target

@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
 module Network.Traffic.Object.Types
-       ( Object (..)
+       ( EnumerationTarget (..)
+       , Object (..)
        , ObjectVector
        , Transport (..)
        , Application (..)
@@ -25,6 +26,15 @@ import Data.Csv ( FromField (parseField)
 import qualified Data.Vector as V
 import GHC.Generics (Generic())
 import GHC.Int (Int64)
+
+-- | Enumeration target.
+data EnumerationTarget = Transport
+                       | Application 
+                       | Functionality
+                       | ServiceProvider
+                       | ClientApp
+                       | TerminalType
+    deriving (Show)
 
 type ObjectVector = V.Vector Object
 

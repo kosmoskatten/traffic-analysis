@@ -4,7 +4,6 @@ module Network.Traffic.Object
 
 import Network.Traffic.Object.Counter as Export ( Counter (..) )
 import Network.Traffic.Object.Enumerator as Export ( Enumeration
-                                                   , EnumerationTarget (..)
                                                    , Quantification
                                                    , printable
                                                    , enumerateBy
@@ -12,7 +11,8 @@ import Network.Traffic.Object.Enumerator as Export ( Enumeration
                                                    , quantifyEnumeration )
 import Network.Traffic.Object.Reader as Export ( decodeObjects
                                                , decodeObjectsPar )
-import Network.Traffic.Object.Types as Export ( Object (..)
+import Network.Traffic.Object.Types as Export ( EnumerationTarget (..)
+                                              , Object (..)
                                               , ObjectVector
                                               , Transport (..)
                                               , Application (..)
