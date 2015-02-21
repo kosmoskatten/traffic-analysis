@@ -13,6 +13,7 @@ module Network.Traffic.Object.Types
        , Vendor (..)
        , OS (..)
        , Direction (..)
+       , maybeRead
        ) where
 
 import Control.Applicative ((<$>), (<*>))
@@ -34,7 +35,7 @@ data EnumerationTarget = Transport
                        | ServiceProvider
                        | ClientApp
                        | TerminalType
-    deriving (Show)
+    deriving (Bounded, Enum, Read, Show)
 
 type ObjectVector = V.Vector Object
 
@@ -267,3 +268,9 @@ instance NFData Vendor where
 instance NFData OS where
 instance NFData Direction where
 instance NFData Object where
+
+maybeRead :: Read a => String -> Maybe a
+maybeRead xs =
+  case reads xs of
+    [(x, "")] -> Just x
+    _         -> Nothing

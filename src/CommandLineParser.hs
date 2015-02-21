@@ -6,7 +6,7 @@ module CommandLineParser
 
 import Control.Applicative ((<$>), (*>), (<*), (<*>))
 import Control.Monad (void)
-import Network.Traffic.Object (EnumerationTarget (..))
+import Network.Traffic.Object (EnumerationTarget (..), maybeRead)
 import Text.Parsec
 import Text.Parsec.String
 
@@ -50,12 +50,13 @@ quit :: Parser Command
 quit = string "quit" *> return Quit
 
 enumerationTarget :: Parser EnumerationTarget
-enumerationTarget = try (string "transport") *> return Transport
-                    <|> try (string "application") *> return Application
-                    <|> try (string "functionality") *> return Functionality
-                    <|> try (string "serviceprovider") *> return ServiceProvider
-                    <|> try (string "clientapp") *> return ClientApp
-                    <|> try (string "terminaltype") *> return TerminalType
+enumerationTarget = do
+  s <- many1 letter
+  case maybeRead s of
+    Just target -> return target
+    Nothing     -> let expect = "Expected oneof: "
+                                ++ show [ minBound :: EnumerationTarget .. ]
+                   in parserFail expect
 
 filterSpec :: Parser Filter
 filterSpec = many1 space *> string "where" *> filterSpec'
@@ -69,7 +70,6 @@ filterSpec = many1 space *> string "where" *> filterSpec'
       void $ many1 space
       value <- many1 letter
       return $ Filter target value
-
 
 filePath :: Parser FilePath
 filePath = many1 ( letter
