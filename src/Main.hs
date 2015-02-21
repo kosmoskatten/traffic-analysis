@@ -33,12 +33,16 @@ handleCommandLine line =
 handleCommand :: Command -> Repl (Maybe ObjectVector) Bool
 handleCommand EmptyLine = return True
 
-handleCommand (Enumerate target _) = do
+handleCommand (Enumerate target filterFunc) = do
   state <- get
   case state of
     Nothing      -> liftIO $ putStrLn "No file is loaded"
-    Just objects -> do p <- timedAction (return $!! printable target objects)
-                       liftIO $ putStrLn p
+    Just objects -> do
+      p <- timedAction $ do
+        let objects' = filterObjects filterFunc objects
+        return $!! printable target objects'
+  
+      liftIO $ putStrLn p
   return True
 
 handleCommand (File filePath) =

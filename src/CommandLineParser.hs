@@ -1,20 +1,18 @@
 module CommandLineParser
        ( Command (..)
-       , Filter (..)
        , parseCommandLine
        ) where
 
 import Control.Applicative ((<$>), (*>), (<*), (<*>))
 import Control.Monad (void)
-import Network.Traffic.Object (EnumerationTarget (..), maybeRead)
+import Network.Traffic.Object ( EnumerationTarget (..)
+                              , FilterFunc (..)
+                              , maybeRead )
 import Text.Parsec
 import Text.Parsec.String
 
-data Filter = Filter !String !String
-    deriving Show
-
 data Command = EmptyLine 
-             | Enumerate !EnumerationTarget !(Maybe Filter)
+             | Enumerate !EnumerationTarget !(Maybe FilterFunc)
              | File !FilePath 
              | Help 
              | Quit
@@ -58,10 +56,10 @@ enumerationTarget = do
                                 ++ show [ minBound :: EnumerationTarget .. ]
                    in parserFail expect
 
-filterSpec :: Parser Filter
+filterSpec :: Parser FilterFunc
 filterSpec = many1 space *> string "where" *> filterSpec'
   where
-    filterSpec' :: Parser Filter
+    filterSpec' :: Parser FilterFunc
     filterSpec' = do
       void $ many1 space
       target <- many1 letter
@@ -69,7 +67,7 @@ filterSpec = many1 space *> string "where" *> filterSpec'
       void $ string "is"
       void $ many1 space
       value <- many1 letter
-      return $ Filter target value
+      return $ FilterFunc (\_ -> True)
 
 filePath :: Parser FilePath
 filePath = many1 ( letter
