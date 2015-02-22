@@ -7,6 +7,7 @@ import Control.Applicative ((<$>), (*>), (<*), (<*>))
 import Control.Monad (void)
 import Network.Traffic.Object ( EnumerationTarget (..)
                               , FilterFunc (..)
+                              , filterFunc
                               , maybeRead )
 import Text.Parsec
 import Text.Parsec.String
@@ -67,7 +68,9 @@ filterSpec = many1 space *> string "where" *> filterSpec'
       void $ string "is"
       void $ many1 space
       value <- many1 letter
-      return $ FilterFunc (\_ -> True)
+      case filterFunc target value of
+        Left err -> parserFail err
+        Right f  -> return f
 
 filePath :: Parser FilePath
 filePath = many1 ( letter

@@ -6,7 +6,10 @@ import Control.Concurrent.Async (async, cancel)
 import Control.DeepSeq (($!!))
 import Control.Monad (forever, void, when)
 import qualified Data.ByteString.Lazy as LBS
-import Network.Traffic.Object
+import Network.Traffic.Object ( ObjectVector
+                              , decodeObjectsPar
+                              , filterObjects
+                              , printable )
 import Repl (Repl, get, liftIO, put, runRepl)
 import System.Console.Readline (readline, addHistory)
 import System.IO (hPutChar, hPutStrLn, hFlush, stdout)

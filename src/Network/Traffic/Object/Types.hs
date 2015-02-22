@@ -41,7 +41,7 @@ type ObjectVector = V.Vector Object
 
 -- | Transport protocol.
 data Transport = ICMP | IGMP | IPv6 | TCP | UDP | VISA
-    deriving (Eq, Generic, Ord, Show)
+    deriving (Eq, Generic, Ord, Read, Show)
 
 -- | Application protocol.
 data Application = ApplePushNotificationService | BitTorrent | C2DM 

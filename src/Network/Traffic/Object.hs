@@ -10,7 +10,8 @@ import Network.Traffic.Object.Enumerator as Export ( Enumeration
                                                    , toString
                                                    , quantifyEnumeration )
 import Network.Traffic.Object.Filter as Export ( FilterFunc (..)
-                                               , filterObjects )
+                                               , filterObjects
+                                               , filterFunc )
 import Network.Traffic.Object.Reader as Export ( decodeObjects
                                                , decodeObjectsPar )
 import Network.Traffic.Object.Types as Export ( EnumerationTarget (..)
