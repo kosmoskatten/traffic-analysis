@@ -49,7 +49,7 @@ data Application = ApplePushNotificationService | BitTorrent | C2DM
                  | IMAP | NTP | PPStream 
                  | POP3 | QVOD | RTMP | RTP | RTSP | SMTP | SIP 
                  | Spotify | UPnP | Windows | XBOX | XMPP
-    deriving (Eq, Generic, Ord, Show)
+    deriving (Eq, Generic, Ord, Read, Show)
 
 -- | Functionality description.
 data Functionality = Advertisement | Audio | CloudStorage
@@ -58,7 +58,7 @@ data Functionality = Advertisement | Audio | CloudStorage
                    | Media | MMS | PhotoSharing | SoftwareUpdate
                    | SocialNetworking | System 
                    | Video | Weather | WebBrowsing
-    deriving (Eq, Generic, Ord, Show)
+    deriving (Eq, Generic, Ord, Read, Show)
 
 -- | Encapsulation.
 newtype Encapsulation = Encapsulation BS.ByteString
@@ -71,17 +71,17 @@ newtype Encryption = Encryption BS.ByteString
 data ServiceProvider = Amazon | Facebook | Google | GooglePlay | Netflix
                      | Microsoft | P2P | Twitter | Yahoo | YouTube
                      | Service !BS.ByteString
-    deriving (Eq, Generic, Ord, Show)
+    deriving (Eq, Generic, Ord, Read, Show)
 
 -- | Client Application.
 data ClientApp = AndroidMediaPlayer | InternetExplorer | TwitterApp
                | WindowsMediaPlayer | YouTubePlayer
                | App !BS.ByteString
-    deriving (Eq, Generic, Ord, Show)
+    deriving (Eq, Generic, Ord, Read, Show)
 
 -- | Terminal type.
 data TerminalType = Handheld | M2M | PC | Router | Tablet
-    deriving (Eq, Generic, Ord, Show)
+    deriving (Eq, Generic, Ord, Read, Show)
 
 -- | Vendor name.
 newtype Vendor = Vendor BS.ByteString
