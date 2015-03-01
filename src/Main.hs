@@ -7,12 +7,15 @@ import Control.DeepSeq (($!!))
 import Control.Monad (forever, void, when)
 import qualified Data.ByteString.Lazy as LBS
 import Network.Traffic.Object ( ObjectVector
+                              , Duration (..)
                               , decodeObjectsPar
                               , filterObjects
-                              , printable )
+                              , printable
+                              , totalPlaytime )
 import Repl (Repl, get, liftIO, put, runRepl)
 import System.Console.Readline (readline, addHistory)
 import System.IO (hPutChar, hPutStrLn, hFlush, stdout)
+import Text.Printf (printf)
 
 main :: IO ()
 main = void $ runRepl repl Nothing
@@ -30,7 +33,7 @@ handleCommandLine line =
   case parseCommandLine line of
     Left err      -> do liftIO $ putStrLn (show err)
                         return True
-    Right command -> do liftIO $ addHistory line      
+    Right command -> do liftIO $ addHistory line
                         handleCommand command
 
 handleCommand :: Command -> Repl (Maybe ObjectVector) Bool
@@ -56,6 +59,15 @@ handleCommand (File filePath) =
         Right objects -> put $ Just objects
         Left err      -> liftIO $ putStrLn err
       return True
+
+handleCommand Playtime = do
+  state <- get
+  case state of
+    Nothing      -> liftIO $ putStrLn "No file is loaded"
+    Just objects -> do
+      (Seconds t) <- timedAction $ return $!! totalPlaytime objects
+      liftIO $ printf "Total playtime is %.2f seconds\n" t
+  return True
       
 handleCommand Help = return True
 handleCommand Quit = return False

@@ -18,6 +18,7 @@ import Network.Traffic.Object.Timeline as Export ( Timeline
                                                  , Duration (..)
                                                  , timeline
                                                  , totalPlaytime
+                                                 , lastObjectStart
                                                  )
 import Network.Traffic.Object.Types as Export ( EnumerationTarget (..)
                                               , Object (..)

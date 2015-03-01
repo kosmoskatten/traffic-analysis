@@ -14,7 +14,8 @@ import Text.Parsec.String
 
 data Command = EmptyLine 
              | Enumerate !EnumerationTarget !(Maybe FilterFunc)
-             | File !FilePath 
+             | File !FilePath
+             | Playtime
              | Help 
              | Quit
     deriving Show
@@ -26,6 +27,7 @@ commandLine :: Parser Command
 commandLine = spaces *> ( emptyLine 
                           <|> enumerate <* eof'
                           <|> file <* eof'
+                          <|> playtime <* eof'
                           <|> quit <* eof'
                           <|> help <* eof' )
 
@@ -41,6 +43,9 @@ enumerate = string "enumerate" *> many1 space *>
 
 file :: Parser Command
 file = string "file" *> spaces *> (File <$> filePath)
+
+playtime :: Parser Command
+playtime = string "playtime" *> return Playtime
 
 help :: Parser Command
 help = string "help" *> return Help

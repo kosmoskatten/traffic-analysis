@@ -1,15 +1,18 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE DeriveGeneric, RecordWildCards #-}
 module Network.Traffic.Object.Timeline
        ( Timeline
        , Duration (..)
        , timeline
        , totalPlaytime
+       , lastObjectStart
        ) where
 
 import Control.Applicative ((<$>))
+import Control.DeepSeq (NFData)
 import Control.Monad.ST
 import Data.STRef
 import qualified Data.Vector as V
+import GHC.Generics (Generic)
 import Network.Traffic.Object.Types ( Object (..)
                                     , ObjectVector )
 
@@ -17,7 +20,9 @@ type Timeline = V.Vector (ObjectVector, ObjectVector)
 data Duration = Seconds !Float
               | Milliseconds !Float
               | Microseconds !Float
-  deriving (Show)
+  deriving (Generic, Show)
+
+instance NFData Duration where
 
 timeline :: ObjectVector -> Duration -> Timeline
 timeline objects resolution =
@@ -51,6 +56,9 @@ totalPlaytime = Seconds . V.foldl' greatest 0
     greatest :: Float -> Object -> Float
     {-# INLINE greatest #-}
     greatest acc Object {..} = max acc (timestamp + duration)
+
+lastObjectStart :: ObjectVector -> Duration
+lastObjectStart = Seconds . timestamp . V.last
 
 units :: Duration -> Duration -> Int
 units (Seconds dur) (Seconds res) = ceiling $ dur / res
