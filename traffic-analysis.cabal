@@ -20,6 +20,7 @@ executable traffic-analysis
                        , Network.Traffic.Object.Counter
                        , Network.Traffic.Object.Enumerator
                        , Network.Traffic.Object.Filter
+                       , Network.Traffic.Object.Timeline
                        , Network.Traffic.Object.Types
                        , Network.Traffic.Object.Reader
   -- other-extensions:    

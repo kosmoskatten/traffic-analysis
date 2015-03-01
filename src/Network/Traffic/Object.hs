@@ -14,6 +14,11 @@ import Network.Traffic.Object.Filter as Export ( FilterFunc (..)
                                                , filterFunc )
 import Network.Traffic.Object.Reader as Export ( decodeObjects
                                                , decodeObjectsPar )
+import Network.Traffic.Object.Timeline as Export ( Timeline
+                                                 , Duration (..)
+                                                 , timeline
+                                                 , totalPlaytime
+                                                 )
 import Network.Traffic.Object.Types as Export ( EnumerationTarget (..)
                                               , Object (..)
                                               , ObjectVector
