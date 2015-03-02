@@ -7,10 +7,10 @@ import Control.DeepSeq (($!!))
 import Control.Monad (forever, void, when)
 import qualified Data.ByteString.Lazy as LBS
 import Network.Traffic.Object ( ObjectVector
-                              , Duration (..)
                               , decodeObjectsPar
                               , filterObjects
                               , printable
+                              , lastObjectTime
                               , totalPlaytime )
 import Repl (Repl, get, liftIO, put, runRepl)
 import System.Console.Readline (readline, addHistory)
@@ -64,11 +64,18 @@ handleCommand Playtime = do
   state <- get
   case state of
     Nothing      -> liftIO $ putStrLn "No file is loaded"
-    Just objects -> do
-      (Seconds t) <- timedAction $ return $!! totalPlaytime objects
-      liftIO $ printf "Total playtime is %.2f seconds\n" t
+    Just objects -> do t <- timedAction $ return $!! totalPlaytime objects
+                       liftIO $ printf "Total playtime is %s\n" (show t)
   return True
-      
+
+handleCommand LastObjectTime = do
+  state <- get
+  case state of
+    Nothing      -> liftIO $ putStrLn "No file is loaded"
+    Just objects -> liftIO $ printf "Last object's time is: %s\n"
+                                    (show $ lastObjectTime objects)
+  return True
+
 handleCommand Help = return True
 handleCommand Quit = return False
 

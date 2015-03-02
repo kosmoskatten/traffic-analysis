@@ -16,6 +16,7 @@ data Command = EmptyLine
              | Enumerate !EnumerationTarget !(Maybe FilterFunc)
              | File !FilePath
              | Playtime
+             | LastObjectTime
              | Help 
              | Quit
     deriving Show
@@ -28,6 +29,7 @@ commandLine = spaces *> ( emptyLine
                           <|> enumerate <* eof'
                           <|> file <* eof'
                           <|> playtime <* eof'
+                          <|> lastObjectTime <* eof'
                           <|> quit <* eof'
                           <|> help <* eof' )
 
@@ -46,6 +48,9 @@ file = string "file" *> spaces *> (File <$> filePath)
 
 playtime :: Parser Command
 playtime = string "playtime" *> return Playtime
+
+lastObjectTime :: Parser Command
+lastObjectTime = string "lastobjecttime" *> return LastObjectTime
 
 help :: Parser Command
 help = string "help" *> return Help

@@ -4,7 +4,7 @@ module Network.Traffic.Object.Timeline
        , Duration (..)
        , timeline
        , totalPlaytime
-       , lastObjectStart
+       , lastObjectTime
        ) where
 
 import Control.Applicative ((<$>))
@@ -15,15 +15,21 @@ import qualified Data.Vector as V
 import GHC.Generics (Generic)
 import Network.Traffic.Object.Types ( Object (..)
                                     , ObjectVector )
+import Text.Printf (printf)
 
 type Timeline = V.Vector (ObjectVector, ObjectVector)
 data Duration = Seconds !Float
               | Milliseconds !Float
               | Microseconds !Float
-  deriving (Generic, Show)
+  deriving (Generic)
 
 instance NFData Duration where
 
+instance Show Duration where
+  show (Seconds t)      = printf "%.2f seconds" t
+  show (Milliseconds t) = printf "%.2f milliseconds" t
+  show (Microseconds t) = printf "%.2f microseconds" t
+  
 timeline :: ObjectVector -> Duration -> Timeline
 timeline objects resolution =
   let totalPlaytime' = totalPlaytime objects
@@ -57,8 +63,8 @@ totalPlaytime = Seconds . V.foldl' greatest 0
     {-# INLINE greatest #-}
     greatest acc Object {..} = max acc (timestamp + duration)
 
-lastObjectStart :: ObjectVector -> Duration
-lastObjectStart = Seconds . timestamp . V.last
+lastObjectTime :: ObjectVector -> Duration
+lastObjectTime = Seconds . timestamp . V.last
 
 units :: Duration -> Duration -> Int
 units (Seconds dur) (Seconds res) = ceiling $ dur / res
